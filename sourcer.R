@@ -6,5 +6,11 @@
 #source R_Client
 source("R_Client.R")
 source("generationMaster.R")
-
-input = generateInput(batchSize = 50, seed = sample(1:10000, 1))
+source("visMaster.R")
+install.packages("plot3D")
+library(plot3D)
+install.packages("plot3Drgl")
+library("plot3Drgl")
+library(httr)
+library(htmltools)
+library(jsonlite)

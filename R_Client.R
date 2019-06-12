@@ -1,5 +1,3 @@
-if (!require("httr")) library(httr)
-if (!require("jsonlite")) library(jsonlite)
 #'@description get observations of the functions returned
 #'@author Case study team
 #'@param input: give dataframe of observations to be passed to function
@@ -52,10 +50,3 @@ apirequest = function(input, func, endpoint, base, token){
   data=as.double(split)
   return (data)
 }
-
-base="optim.uni-muenster.de:5000/"
-token="866de98d0d47426e92cc0e3394df5f07"
-
-input = data.frame(x=c(2,0.4,9), y=c(3.4, 0.5,9))
-response = apirequest(input, 2, "api-test2D")
-response
