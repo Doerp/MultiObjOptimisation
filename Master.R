@@ -6,6 +6,8 @@ token="866de98d0d47426e92cc0e3394df5f07"
 endpoint = "api-test2D"
 dimensions = 2
 batchSize = 50
+MU = 30L; LAMBDA = 5L; MAX.ITER = 200L
+algos = c("SVM", "XGB", "RF", "ANN", "KNN")
 
 #all operations of the data take place here
 #no external data may be generated - functional proramming; all data need to be returned to the master layer
@@ -14,13 +16,14 @@ batchSize = 50
 dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 100, base = base, 
                                token = token, dimensions = dimensions)
 
-#visualise these datapoints in a 3D explorable space
-visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "func1")
+#visualise these datapoints in a 3D explorable space. 
+visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "all")
 
+fn = prepareFunction()
 
-#SVM, XGBOOST, RandomForest, KNN, ANN
-#EA, Gradient Descent, Sequential models
+#data is very much different in the two functions. Can we normalise them? I don't think so, right?
 
+#try sequential models?
 
 
 
