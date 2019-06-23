@@ -31,3 +31,53 @@ fn = prepareFunction()
 
 
 
+
+output_svm = Svm_model(df = dataframe)
+
+output_keras = kerasModel(df = dataframe)
+
+
+rsq_1 = cor(x = dataframe$func1,output_keras$pred_1)^2
+
+rsq_2 = cor(x = dataframe$func2,output_keras$pred_2)^2
+
+r_sqd <- function(actual , response){
+        
+       tss = sum((mean(actual) - actual)^2)
+       rss = sum((actual - response)^2)
+       
+       print(tss)
+       print(rss)
+       
+       rsq = 1-(rss/tss)
+       
+       return(rsq)
+        
+}
+
+rsq_1
+rsq_2
+
+?scale
+
+data.frame(scale(dataframe))
+
+
+#respone of func1 is dependent on x2
+ggplot(data = data.frame(scale(dataframe)), mapping = aes(x = x2, y = func1)) + geom_point()
+
+ggplot(data = data.frame(scale(dataframe)), mapping = aes(x = x1, y = func1)) + geom_point()
+
+
+#respone of func2 is dependent on x1
+ggplot(data = data.frame(scale(dataframe)), mapping = aes(x = x1, y = func2)) + geom_point()
+
+
+
+head(output_keras)
+head(output_svm)
+
+
+ggplot(data = output_keras , mapping = aes(x = pred_1 , y = pred_2)) + geom_point()
+
+ggplot(data = output_svm , mapping = aes(x = new_pred1 , y = new_pred2)) + geom_point()
