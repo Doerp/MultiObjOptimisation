@@ -13,21 +13,12 @@ algos = c("SVM", "XGB", "RF", "ANN", "KNN")
 #no external data may be generated - functional proramming; all data need to be returned to the master layer
 
 #import data and build dataframe for observations and the two target variables. 
-dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 100, base = base, 
-                               token = token, dimensions = dimensions)
+dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 20, base = base, 
+                               token = token, dimensions = dimensions, sample = "random")
 
 #visualise these datapoints in a 3D explorable space. 
 visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "all")
 
-fn = prepareFunction()
-
-#data is very much different in the two functions. Can we normalise them? I don't think so, right?
-
-#try sequential models?
-
-
-
-
-
-
-
+#create surrogate models for both functions
+svm = svmModel(dataframe)
+keras = kerasModel(dataframe)
