@@ -1,4 +1,4 @@
-Svm_model = function(df){
+svmModel = function(df){
         
 input1 = df[c('x1','x2','func1')]
 input1 = data.frame(scale(input1))  # Standardizing the data
@@ -57,7 +57,7 @@ new_pred2 = pred2$data$response
 # Creating the dataframe with predicting the response varaiables using our models
 df = data.frame(new_pred1, new_pred2) 
 
-return(df)
+return(list(df, mod1, mod2))
 
 }
 

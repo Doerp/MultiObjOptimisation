@@ -80,5 +80,5 @@ pred_2 = predict(object = model1 , x = X_2)
 
 df = data.frame(pred_1, pred_2)
 
-return(df)
+return(list(df, model, model1))
 }
