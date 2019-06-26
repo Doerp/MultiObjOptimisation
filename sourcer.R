@@ -18,6 +18,6 @@ source("R_Client.R")
 source("generationMaster.R") 
 source("visMaster.R")
 source("SVM.R")
-source("ANN.R")
+source("ann.R")
 #source("evolutionMaster.R") deprecated: is not needed. Misunderstanding of the task
 

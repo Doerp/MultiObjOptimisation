@@ -19,6 +19,6 @@ dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops
 #visualise these datapoints in a 3D explorable space. 
 visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "all")
 
-#create surrogate models for both functions
+#create surrogate models for both functions (returns df as well as models)
 svm = svmModel(dataframe)
 keras = kerasModel(dataframe)
