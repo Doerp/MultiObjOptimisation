@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1561010453791.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "FF635327",
+    "lastKnownWriteTime" : 1561009431,
+    "last_content_update" : 1561009431,
+    "path" : "C:/Users/Raghav/Desktop/DA_2/project/new/MultiObjOptimisation/evolutionMaster.R",
+    "project_path" : "evolutionMaster.R",
+    "properties" : {
+        "cursorPosition" : "67,59",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

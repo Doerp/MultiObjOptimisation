@@ -1,24 +1,23 @@
 ###sourcer###
 
 #source all the necessary functions for the entire script to have a coherent structure in the project
-#insert necessary functions here
 
-#install and load necessary packages
-#install.packages("plot3D")
-library(plot3D)
-#install.packages("plot3Drgl")
-library("plot3Drgl")
-#install.packages("rgl")
-library("rgl")
-#install.packages("httr")
-library(httr)
-#install.packages("htmltools")
-library(htmltools)
-#install.packages("jsonlite")
-library(jsonlite)
-#install.packages("ecr")
-library(ecr)
-#install.packages("PrevMap")
-library(PrevMap)
-#install.packages("sf")
-library(sf)
+#Install necessary packages
+pkgs <-c('plot3D','ecr','ggplot2','reticulate','plot3Drgl',"roxygen2", "httr", "jsonlite", "htmltools", "mlr", "keras", "sf", "PrevMap")
+for(p in pkgs) {
+  if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}  
+}
+
+for(p in pkgs) {
+  suppressPackageStartupMessages(library(p, quietly=TRUE, character.only=TRUE))
+}
+rm('p','pkgs')  
+
+#insert necessary functions here
+install_keras()
+source("R_Client.R")
+source("generationMaster.R") 
+source("visMaster.R")
+source("SVM.R")
+source("ANN.R")
+#source("evolutionMaster.R") deprecated: is not needed. Misunderstanding of the task
