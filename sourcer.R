@@ -14,10 +14,13 @@ for(p in pkgs) {
 rm('p','pkgs')  
 
 #insert necessary functions here
-install_keras()
+#install_keras()
+library(tensorflow)
 source("R_Client.R")
 source("generationMaster.R") 
 source("visMaster.R")
-source("SVM.R")
-source("ANN.R")
+source("svm.R")
+source("ann.R")
+source("xgboost.R")
+source("rf.R")
 #source("evolutionMaster.R") deprecated: is not needed. Misunderstanding of the task
