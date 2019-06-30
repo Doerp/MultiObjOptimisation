@@ -1,35 +1,33 @@
-rfModel = function(train1, train2){
+knnModel = function(train1, train2){
         
         #Create learner
         train_task1 = makeRegrTask(id = 'train', data = train1, target = 'func1')
         train_task2 = makeRegrTask(id = 'train', data = train2, target = 'func2')
         
+        knn_learner = makeLearner(cl = 'regr.kknn')
+        
         #Creating 5-fold Cross Validation
         rdesc = makeResampleDesc("CV", iters = 5L)
         
         #Creating a parameter set for the learner
-        rf_params <- makeParamSet(
-                # The number of trees in the model (each one built sequentially)
-                makeIntegerParam("ntree", lower = 300, upper = 700),
-                # Number of observations in the terminal nodes
-                makeIntegerParam("nodesize", lower = 1, upper = 10),
-                # Number of variables to be selected at a node split
-                makeIntegerParam("mtry", lower = 2, upper = 10)
+        knn_params <- makeParamSet(
+                makeDiscreteParam("k", values = c(4,5,6,7,8,9,10)),
+                makeDiscreteParam("distance", values = c(1,2,3,4))
         )
         
         #Define how to search through the parameter set
-        ctrl = makeTuneControlRandom(maxit=5L)
+        ctrl = makeTuneControlRandom(maxit=5)
         #ctrl = makeTuneControlGrid()
         
         #Fine Tuning the Models for both functions based on param set
-        res1 = tuneParams("regr.randomForest", task = train_task1, resampling = rdesc,
-                          par.set = rf_params, control = ctrl)
-        res2 = tuneParams("regr.randomForest", task = train_task2, resampling = rdesc,
-                          par.set = rf_params, control = ctrl)
+        res1 = tuneParams("regr.kknn", task = train_task1, resampling = rdesc,
+                          par.set = knn_params, control = ctrl)
+        res2 = tuneParams("regr.kknn", task = train_task2, resampling = rdesc,
+                          par.set = knn_params, control = ctrl)
         
         #Setting the parameters which are selected as best from fine tuning
-        lrn1 = setHyperPars(makeLearner("regr.randomForest"), par.vals = res1$x)
-        lrn2 = setHyperPars(makeLearner("regr.randomForest"), par.vals = res2$x)
+        lrn1 = setHyperPars(makeLearner("regr.kknn"), par.vals = res1$x)
+        lrn2 = setHyperPars(makeLearner("regr.kknn"), par.vals = res2$x)
         
         #Retrain models based on optimal hyperparamsets
         #mod1 = mlr::train(learner = lrn1, task = train_task1)

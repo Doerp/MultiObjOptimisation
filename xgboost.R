@@ -1,20 +1,4 @@
-XGBoostModel = function(df){
-        
-        #Access and standardize data
-        input1 = df[c("x1","x2","func1")]
-        input1 = data.frame(scale(input1))  # Standardizing the data
-        
-        input2 = df[c("x1","x2","func2")]
-        input2 = data.frame(scale(input2)) # Standardizing the data
-        
-        #Create train/test split for training algorithms
-        ids1 = sample(1:nrow(input1), size=nrow(input1)*0.8, replace = FALSE)
-        train1 = input1[ids1,]
-        test1 = input1[-ids1,]
-        
-        ids2 = sample(1:nrow(input2), size=nrow(input2)*0.8, replace = FALSE)
-        train2 = input2[ids2,]
-        test2 = input2[-ids2,]
+XGBoostModel = function(train1, train2){
         
         #Create XGBoost learner
         train_task1 = makeRegrTask(id = 'train', data = train1, target = 'func1')
@@ -54,18 +38,16 @@ XGBoostModel = function(df){
         mod2 = mlr::train(learner = lrn2, task = train_task2)
         
         #Predict the targets in the initial train task
-        pred1 = predict(mod1, newdata = test1)
-        print(performance(pred=pred1, measures=list(mse)))
-        pred2 = predict(mod2, newdata = test2)
-        print(performance(pred=pred2, measures=list(mse)))
+        #pred1 = predict(mod1, newdata = test1)
+        #print(performance(pred=pred1, measures=list(mse)))
+        #pred2 = predict(mod2, newdata = test2)
+        #print(performance(pred=pred2, measures=list(mse)))
         
         #Creating one dataframe with predictions for both functions
-        new_pred1 = pred1$data$response
-        new_pred2 = pred2$data$response
+        #new_pred1 = pred1$data$response
+        #new_pred2 = pred2$data$response
         
-        df = data.frame(new_pred1, new_pred2)
+        #df = data.frame(new_pred1, new_pred2)
         
-        return(df)
-        return(mod1)
-        return(mod2)
+        return(list(lrn1, lrn2, mod1, mod2))
 }
