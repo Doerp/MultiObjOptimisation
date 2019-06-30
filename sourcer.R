@@ -3,7 +3,7 @@
 #source all the necessary functions for the entire script to have a coherent structure in the project
 #insert necessary functions here
 
-pkgs <-c('plot3D','ecr','ggplot2','reticulate','plot3Drgl',"roxygen2", "httr", "jsonlite", "htmltools", "mlr", "keras")
+pkgs <-c('plot3D','ecr','ggplot2','reticulate','plot3Drgl',"roxygen2", "httr", "jsonlite", "htmltools", "mlr", "keras", "dplyr")
 for(p in pkgs) {
   if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}  
 }
@@ -13,7 +13,7 @@ for(p in pkgs) {
 }
 rm('p','pkgs')  
 
-install_keras()
+#install_keras()
 source("R_Client.R")
 source("generationMaster.R") 
 source("visMaster.R")
