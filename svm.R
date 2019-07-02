@@ -1,4 +1,4 @@
-svmModel = function(df){
+svmModel = function(train1, train2){
         
         train_task1 = makeRegrTask(id = "train", data = train1, target = "func1")
         train_task2 = makeRegrTask(id = "train", data = train2, target = "func2")
@@ -29,8 +29,8 @@ svmModel = function(df){
         lrn2 = setHyperPars(makeLearner("regr.ksvm"), par.vals = res2$x)
         
         #Retrain models based on optimal hyperparamsets
-        #mod1 = mlr::train(learner = lrn1, task = train_task1)
-        #mod2 = mlr::train(learner = lrn2, task = train_task2)
+        mod1 = mlr::train(learner = lrn1, task = train_task1)
+        mod2 = mlr::train(learner = lrn2, task = train_task2)
         
         #Predict the targets in the initial train task
         #pred1 = predict(mod1, newdata = test1)
@@ -44,5 +44,5 @@ svmModel = function(df){
         
         #df = data.frame(new_pred1, new_pred2)
         
-        return(list(lrn1, lrn2))
+        return(list(mod1, mod2, lrn1, lrn2))
 }

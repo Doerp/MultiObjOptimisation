@@ -129,18 +129,18 @@ split = function(df){
   #Access and standardize data
   if(ncol(df) == 5){
     input1 = df[c("x1","x2","func1")]
-    input1 = data.frame(scale(input1)) # Standardizing the data
+    #input1 = data.frame(scale(input1)) # Standardizing the data
     
     input2 = df[c("x1","x2","func2")]
-    input2 = data.frame(scale(input2)) # Standardizing the data
+    #input2 = data.frame(scale(input2)) # Standardizing the data
   }
   
   if(ncol(df) == 6){
     input1 = df[c("x1","x2","x3","func1")]
-    input1 = data.frame(scale(input1)) # Standardizing the data
+    #input1 = data.frame(scale(input1)) # Standardizing the data
     
     input2 = df[c("x1","x2","x3","func2")]
-    input2 = data.frame(scale(input2)) # Standardizing the data
+    #input2 = data.frame(scale(input2)) # Standardizing the data
   }
   
   #Create train/test split for training algorithms

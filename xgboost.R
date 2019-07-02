@@ -49,5 +49,5 @@ XGBoostModel = function(train1, train2){
         
         #df = data.frame(new_pred1, new_pred2)
         
-        return(list(lrn1, lrn2, mod1, mod2))
+        return(list(mod1, mod2, lrn1, lrn2))
 }

@@ -99,10 +99,10 @@ kerasModel = function(train1, train2){
                 verbose=2
         )
         
-        pred_1 = predict(object = mod1 , x = X_1)
-        pred_2 = predict(object = mod2 , x = X_2)
+        #pred1 = predict(object = mod1 , x = X_1)
+        #pred2 = predict(object = mod2 , x = X_2)
         
-        df = data.frame(pred_1, pred_2)
+        #df = data.frame(pred1, pred2)
 
 return(list(mod1, mod2))
 }
