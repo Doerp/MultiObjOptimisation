@@ -27,7 +27,7 @@ fn = prepareFunction()
 
 
 
-
+ggplot(data = dataframe , mapping = aes(x = func1, y = func2)) + geom_point()
 
 
 
@@ -39,9 +39,9 @@ output_svm = Svm_model(df = dataframe)
 output_keras = kerasModel(df = dataframe)
 
 
-rsq_1 = cor(x = dataframe$func1,output_keras$pred_1)^2
+rsq_1 = cor(x = dataframe$func1,output_svm$new_pred1)^2
 
-rsq_2 = cor(x = dataframe$func2,output_keras$pred_2)^2
+rsq_2 = cor(x = dataframe$func2,output_svm$new_pred2)^2
 
 rsq_1
 rsq_2
@@ -71,3 +71,39 @@ ggplot(data = output_keras , mapping = aes(x = pred_1 , y = pred_2)) + geom_poin
 
 # plotting approximations of func1 vs func2 from SVM
 ggplot(data = output_svm , mapping = aes(x = new_pred1 , y = new_pred2)) + geom_point()
+
+
+
+source('SVM.R')
+
+library(smoof)
+library(ecr)
+
+fn = makeAckleyFunction(2L,dimensions = 2)
+
+fn
+
+
+
+
+library(ggplot2)
+library(plot3D)
+
+obj.fn = makeRosenbrockFunction(dimensions = 2L)
+print(obj.fn)
+print(autoplot(obj.fn))
+plot3D(obj.fn, length.out = 40L, contour = TRUE)
+
+
+for(i in 1:4){
+        print(i)
+}
+
+
+makeMultiObjectiveFunction()
+
+getLowerBoxConstraints(output_svm[1])
+
+fn = list(output_svm)
+
+nsga2(fitness.fun = co,n.objectives = dataframe[1:50,c('x1','x2')],n.dim = 2,minimize = TRUE,lower = )

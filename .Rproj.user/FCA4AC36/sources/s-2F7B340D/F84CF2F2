@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1562143400074.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "F84CF2F2",
+    "lastKnownWriteTime" : 1562143425,
+    "last_content_update" : 1562143425011,
+    "path" : "C:/Users/Raghav/Desktop/DA_2/project/new/MultiObjOptimisation/nsga.py",
+    "project_path" : "nsga.py",
+    "properties" : {
+        "cursorPosition" : "73,12",
+        "scrollLine" : "58"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "python"
+}

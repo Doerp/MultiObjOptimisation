@@ -1,0 +1,53 @@
+head(dataframe)
+
+y1 = dataframe$func1
+
+y2 = dataframe$func2
+
+
+range01 <- function(x){(x-min(x))/(max(x)-min(x))}
+
+
+y1 = range01(x = dataframe$func1)
+
+y2 = range01(x = dataframe$func2)
+
+ggplot(data =op, mapping = aes(x = y1 , y = y2) ) + geom_point()+
+geom_point(op[3,] , mapping = aes(x = y1 , y = y2), color = 'blue')
+
+op[1,1]
+
+op = data.frame(y1,y2)
+
+op
+
+matrix(data = op , nrow = 1,ncol = 1)
+
+ref = matrix(data = c(1,1) , nrow = 1,ncol =1)
+
+ref
+
+computeHV(x = mat , ref.point = ref)
+
+head(op)
+
+
+
+volume = list()
+
+for(i in 1:dim(op)[1]){
+        
+        volume[i] = (computeHV(x = matrix(data = as.numeric(op[i,]),nrow = 1,ncol = 2), ref.point = ref))
+}
+
+
+
+typeof(matrix(data = op[i,1],nrow = 1,ncol = 2))
+
+
+computeHV(x = matrix(data = c(1,1),nrow = 1,ncol = 2), ref.point = ref)
+
+dim(matrix(data = c(1,1),nrow = 1,ncol = 2))
+dim(ref)
+
+ref       

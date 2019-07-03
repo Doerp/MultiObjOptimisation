@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1561734529478.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "16D710FB",
+    "lastKnownWriteTime" : 1561920620,
+    "last_content_update" : 1562143785770,
+    "path" : "C:/Users/Raghav/Desktop/DA_2/project/new/MultiObjOptimisation/multiOptimization.R",
+    "project_path" : "multiOptimization.R",
+    "properties" : {
+        "cursorPosition" : "95,23",
+        "scrollLine" : "84",
+        "tempName" : "Untitled4"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,68 @@
+install.packages("ecr")
+library(ggplot2)
+library(smoof)
+library(ecr)
+fn = makeAckleyFunction(1L)
+
+fn
+
+plot(fn)
+
+autoplot(fn, show.optimum=TRUE, length.out = 1000)
+MU = 30L; LAMBDA = 5L; MAX.ITER = 200L
+
+lower = getLowerBoxConstraints(fn)
+
+upper = getUpperBoxConstraints(fn)
+
+control = initECRControl(fn)
+
+?initECRControl()
+
+
+control = registerECROperator(control = control,slot = 'mutate', fun = mutGauss, sdev=2,
+                               upper= upper,lower= lower)
+
+
+control = registerECROperator(control, "selectForSurvival", selGreedy)
+
+MU
+
+getNumberOfParameters(fn)
+
+population = genReal(MU, getNumberOfParameters(fn), lower, upper)
+
+population
+
+
+fitness = evaluateFitness(control = control , inds= population )
+autoplot(fn, length.out = 1000L)        
+
+
+sample(1:MU, LAMBDA)
+
+for (i in seq_len(MAX.ITER)) {
+        # animate the loop
+        pl = autoplot(fn, length.out = 1000L)  
+        df = data.frame(x = unlist(population), y = as.numeric(fitness))
+        pl = pl + geom_point(data = df, mapping = aes(x = x, y = y))
+        print(pl)
+        Sys.sleep(0.2)
+        idx = sample(1:MU, LAMBDA) 
+        offspring = mutate(control, population[idx], p.mut = 1)
+        fitness.o = evaluateFitness(control, offspring)
+        sel = replaceMuPlusLambda(control, population, offspring, fitness, fitness.o)
+        population = sel$population
+        fitness = sel$fitness
+        
+}
+
+population
+
+plot(x=population, y=fitness)
+
+print(min(fitness))
+print(population[[which.min(fitness)]])
+        
+        
+        

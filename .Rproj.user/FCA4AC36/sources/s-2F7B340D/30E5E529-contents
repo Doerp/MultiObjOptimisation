@@ -1,0 +1,54 @@
+fitness_func = function(df){
+        
+        
+        
+}
+
+range01 <- function(x){
+        (x-min(x))/(max(x)-min(x)
+)}
+
+f1 = range01(x = dataframe$func1)
+
+f2 = range01(x = dataframe$func2)
+
+
+df = data.frame(f1,f2)
+
+head(df)
+
+plot(x = df$f1 , y = df$f2)
+
+for(i in 1:dim(df[1:10,])[1]){
+        print(df[i,])
+        
+        1/df[i,1]/sum(df[,1])
+}
+
+
+head(df[,1])
+
+df1 = df
+
+for(i in 1:dim(df1)[1]){
+        df1[i,1] = 1/df[i,1]
+        df1[i,2] = 1/df[i,2]
+}
+
+
+head(df1)
+
+dim(df1)
+
+sum(df1[1:1400,1])
+
+for(i in 1:dim(df1)[1]){
+        df1[i,1] = df1[i,1]
+        df1[i,2] = 1/df[i,2]
+}
+
+
+
+
+
+

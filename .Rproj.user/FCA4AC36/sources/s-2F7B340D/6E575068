@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1561734580617.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "6E575068",
+    "lastKnownWriteTime" : 1561920620,
+    "last_content_update" : 1561920620384,
+    "path" : "C:/Users/Raghav/Desktop/DA_2/project/new/MultiObjOptimisation/Master.R",
+    "project_path" : "Master.R",
+    "properties" : {
+        "cursorPosition" : "41,0",
+        "scrollLine" : "19"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

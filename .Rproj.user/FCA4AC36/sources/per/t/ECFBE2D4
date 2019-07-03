@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1562145940764.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2398915733",
+    "id" : "ECFBE2D4",
+    "lastKnownWriteTime" : 1562145721,
+    "last_content_update" : 1562145721,
+    "path" : "C:/Users/Raghav/Desktop/DA_2/project/new/MultiObjOptimisation/ANN.R",
+    "project_path" : "ANN.R",
+    "properties" : {
+        "cursorPosition" : "3,1",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
