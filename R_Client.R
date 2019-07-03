@@ -15,6 +15,7 @@ apirequest = function(input, func, endpoint, base, token){
 
   data=paste0(input_intermediate, collapse =";")
   
+  print(paste0("requesting ", nrow(input), " observations..."))
   call= paste(base,"/",endpoint,"/",func,"/",token,"/",data,sep="")
   
   #API-Request
@@ -26,6 +27,7 @@ apirequest = function(input, func, endpoint, base, token){
 
   #parsing the JSON format
   data_json_parsed = fromJSON(data_json, flatten = TRUE)
+  print(paste0("only ", data_json_parsed[["remaining"]], " requests left"))
   
   #Check if error occured
   if (names(data_json_parsed)[1]!= "data") {

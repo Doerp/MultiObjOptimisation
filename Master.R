@@ -1,10 +1,16 @@
 ###Master###
+setwd("C:/Users/felix/Google Drive/Master/WWU/Data Analytics 2/MultObjOptimisation")
 source("sourcer.R")
 base="optim.uni-muenster.de:5000/"
 token="866de98d0d47426e92cc0e3394df5f07"
 
-endpoint = "api-test2D"
-dimensions = 2
+endpoint = "api-test3D"
+if(endpoint == "api-test3D"){
+        dimensions = 3
+}
+if(endpoint == "api-test2D") {
+        dimensions = 2
+}
 batchSize = 50
 MU = 30L; LAMBDA = 5L; MAX.ITER = 200L
 algos = c("SVM", "XGB", "RF", "ANN", "KNN")
@@ -14,11 +20,13 @@ algos = c("SVM", "XGB", "RF", "ANN", "KNN")
 
 #import data and build dataframe for observations and the two target variables. 
 dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 20, base = base, 
-                               token = token, dimensions = dimensions, sample = "random")
+                               token = token, dimensions = dimensions, sample = "intelligent")
 
 #visualise these datapoints in a 3D explorable space. 
 visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "all")
 
-#create surrogate models for both functions
+#create surrogate models for both functions (returns df as well as models)
 svm = svmModel(dataframe)
 keras = kerasModel(dataframe)
+
+

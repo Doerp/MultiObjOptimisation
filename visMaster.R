@@ -9,11 +9,11 @@ visualiseDatapoints = function(dataframe, dimensions, mode = "all"){
     
     if(mode == "all") {
       
-      compDataframe1 = dataframe[, -5]
-      colnames(compDataframe1)[4] = "target"
+      compDataframe1 = dataframe[, -4]
+      colnames(compDataframe1)[3] = "target"
       compDataframe1$group = 1
-      compDataframe2 = dataframe[, -4]
-      colnames(compDataframe2)[4] = "target"
+      compDataframe2 = dataframe[, -3]
+      colnames(compDataframe2)[3] = "target"
       compDataframe2$group = 2
       compDataframe = rbind(compDataframe1, compDataframe2)
       
@@ -46,11 +46,11 @@ visualiseDatapoints = function(dataframe, dimensions, mode = "all"){
     
     if(mode == "all") {
       
-      compDataframe1 = dataframe[, -6]
-      colnames(compDataframe1)[5] = "target"
+      compDataframe1 = dataframe[, -5]
+      colnames(compDataframe1)[4] = "target"
       compDataframe1$group = 1
-      compDataframe2 = dataframe[, -5]
-      colnames(compDataframe2)[5] = "target"
+      compDataframe2 = dataframe[, -4]
+      colnames(compDataframe2)[4] = "target"
       compDataframe2$group = 2
       compDataframe = rbind(compDataframe1, compDataframe2)
       
