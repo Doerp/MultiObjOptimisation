@@ -116,7 +116,7 @@ generateInput = function(batchSize = 50, seed, dimensions) {
 #' @description generate hypercube grid as basis for adaptive sampling  [-5:5]
 #' @author: Niclas
 #' @param stepSize: Size of the steps for the initial grid df to be generated
-generateGrid = function(lowerBound = -5, upperBound = 5, stepSize = 0.1, dimensions) {
+generateGrid = function(lowerBound = -5, upperBound = 5, stepSize, dimensions) {
   
   if(dimensions == 3){
     x1 = seq(lowerBound, upperBound, by = stepSize)
@@ -230,12 +230,12 @@ intelligentSample = function(output, endpoint, base, token, dimensions){
 
 #'@description Generate train and test split on the basis of sampled dataframe
 #'@author: Niclas
-split = function(df){
+split = function(df, dimensions){
   
   set.seed(1234)
   
   #Access and standardize data
-  if(ncol(df) == 5){
+  if(dimensions == 2){
     input1 = df[c("x1","x2","func1")]
     #input1 = data.frame(scale(input1)) # Standardizing the data
     
@@ -243,7 +243,7 @@ split = function(df){
     #input2 = data.frame(scale(input2)) # Standardizing the data
   }
   
-  if(ncol(df) == 6){
+  if(dimensions == 3){
     input1 = df[c("x1","x2","x3","func1")]
     #input1 = data.frame(scale(input1)) # Standardizing the data
     

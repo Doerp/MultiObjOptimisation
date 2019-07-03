@@ -4,7 +4,7 @@
 
 
 #Install necessary packages
-pkgs <-c('plot3D','ecr','ggplot2','reticulate','plot3Drgl',"roxygen2", "httr", "jsonlite", "htmltools", "mlr", "keras", "tensorflow", "sf", "PrevMap")
+pkgs <-c('plot3D','ecr','ggplot2','reticulate','plot3Drgl',"roxygen2", "httr", "jsonlite", "htmltools", "mlr", "keras", "tensorflow", "sf", "PrevMap", "data.table")
 
 for(p in pkgs) {
   if(p %in% rownames(installed.packages()) == FALSE) {install.packages(p)}  

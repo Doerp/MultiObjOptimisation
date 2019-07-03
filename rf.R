@@ -1,4 +1,4 @@
-rfModel = function(train1, train2){
+rfModel = function(train1, train2, test1, test2){
         
         #Create learner
         train_task1 = makeRegrTask(id = 'train', data = train1, target = 'func1')
@@ -35,11 +35,11 @@ rfModel = function(train1, train2){
         mod1 = mlr::train(learner = lrn1, task = train_task1)
         mod2 = mlr::train(learner = lrn2, task = train_task2)
         
-        #Predict the targets in the initial train task
-        #pred1 = predict(mod1, newdata = test1)
-        #print(performance(pred=pred1, measures=list(mse)))
-        #pred2 = predict(mod2, newdata = test2)
-        #print(performance(pred=pred2, measures=list(mse)))
+        #Predict the targets in the test data
+        pred1 = predict(mod1, newdata = test1)
+        perf1 = performance(pred=pred1, measures=list(mse))
+        pred2 = predict(mod2, newdata = test2)
+        perf2 = performance(pred=pred2, measures=list(mse))
         
         #Creating one dataframe with predictions for both functions
         #new_pred1 = pred1$data$response
@@ -47,5 +47,5 @@ rfModel = function(train1, train2){
         
         #df = data.frame(new_pred1, new_pred2)
         
-        return(list(mod1, mod2, lrn1, lrn2))
+        return(list(mod1, mod2, perf1, perf2))
 }
