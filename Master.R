@@ -25,13 +25,6 @@ dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops
 #visualise these datapoints in a 3D explorable space. 
 visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "all")
 
-<<<<<<< HEAD
-#create surrogate models for both functions (returns df as well as models)
-svm = svmModel(dataframe)
-keras = kerasModel(dataframe)
-
-
-=======
 #Generate train-test split for model training and tuning
 split = split(dataframe)
 train1 = as.data.frame(split[1])
@@ -70,7 +63,6 @@ print(rmat1)
 rmat2 = convertBMRToRankMatrix(bmr2)
 print(rmat2)
 
-
 #Create predictions with the keras model
 perf1 = evaluate(object = ann[[1]], x = as.matrix(test1[1:2]), y = as.matrix(test1$func1))
 print(perf1$mean_squared_error)
@@ -84,4 +76,3 @@ pred1 = predict(svm[[1]], newdata = test1)
 print(performance(pred=pred1, measures=list(mse,rsq)))
 pred2 = predict(svm[[2]], newdata = test2)
 print(performance(pred=pred2, measures=list(mse,rsq)))
->>>>>>> niclas_surrogates

@@ -79,12 +79,8 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
 
 }
 
-<<<<<<< HEAD
-
 ####only for use with adaptive sampling does not work####
-=======
-####only for use if adaptive sampling does not work####
->>>>>>> c20e8c5c7783db92ea3f676a2412382d92d2fcb4
+
 #' @description generate hypercube input variables for api requests [-5:5]
 #' @author: Felix
 #' @param batchSize: Size of df to be generated
@@ -109,10 +105,6 @@ generateInput = function(batchSize = 50, seed, dimensions) {
         }
         
         return(input)
-}
-
-<<<<<<< HEAD
-  return(input)
 }
 
 
@@ -170,8 +162,8 @@ generateInputGrid = function(endpoint, base, token, dimensions){
   outDf = rbind(outDf, output)
   return(outDf)
 }
-<<<<<<< HEAD
-=======
+
+
 intelligentSample = function(output, endpoint, base, token, dimensions){
         
         if(dimensions == 3) {
@@ -224,8 +216,6 @@ intelligentSample = function(output, endpoint, base, token, dimensions){
         
         return(iteration)
 }
->>>>>>> c20e8c5c7783db92ea3f676a2412382d92d2fcb4
-=======
 
 #'@description Generate train and test split on the basis of sampled dataframe
 #'@author: Niclas
@@ -261,4 +251,3 @@ split = function(df){
   
   return(list(train1,test1,train2,test2))
 }
->>>>>>> niclas_surrogates
