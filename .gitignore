@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 .Rapp.history
+SVM.R
+ANN.R
