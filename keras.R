@@ -1,4 +1,4 @@
-kerasModel = function(train1, train2){
+kerasModel = function(train1, train2, test1, test2){
         
         #Fit model to input shape    
         if(ncol(train1) == 3){
@@ -99,10 +99,13 @@ kerasModel = function(train1, train2){
                 verbose=2
         )
         
+        perf1 = evaluate(object = mod1, x = as.matrix(test1[1:2]), y = as.matrix(test1$func1))
+        perf2 = evaluate(object = mod2, x = as.matrix(test2[1:2]), y = as.matrix(test2$func2))
+        
         #pred1 = predict(object = mod1 , x = X_1)
         #pred2 = predict(object = mod2 , x = X_2)
         
         #df = data.frame(pred1, pred2)
 
-return(list(mod1, mod2))
+return(list(mod1, mod2, perf1$mean_squared_error, perf2$mean_squared_error))
 }
