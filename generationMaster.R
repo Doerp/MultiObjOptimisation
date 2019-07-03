@@ -3,6 +3,10 @@
 #'@param fun: function that needs to be approximated
 #'@param endpoint: endpoint that will be used
 #'@param batchSize: batchSize of observations to be requested from the API; default = 50
+#'@param lopps: How many times should the function request?
+#'@param base: base for Api request
+#'@param dimensions: how many dimensions does the request have? 
+#'@param sample: how should be sampled? randomly or intelligently?
 generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1, base, token, dimensions = 2, sample = "intelligent"){
         outDf = data.frame()
         if(sample == "random") {
@@ -38,21 +42,21 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
                 input = generateInput(batchSize, seed = sample(1:10000, size = 1), dimensions = dimensions)
                 input$seed = NULL
                 
+                
                 if(dimensions == 3){
                         
                         #request initial sample
                         output = cbind(input,
                                        func1 = apirequest(input = input[,1:3], func = 1, endpoint = endpoint, base = base, token = token),
                                        func2 = apirequest(input = input[,1:3], func = 2, endpoint = endpoint, base = base, token = token))
+                        print("random initial sample looks like this:")
+                        visualiseDatapoints(dataframe = output, dimensions = dimensions, mode = "all")
                         
+                        print("proceeding with adaptive sampling")
                         for(i in 1:loops){
                                 iteration = intelligentSample(output = output, endpoint = endpoint, token = token, base = base, dimensions = dimensions)
                                 output = rbind(output, iteration)
-                                #vis
-                                if(i %in% seq(1, 1000, by = 10)) {
-                                        visualiseDatapoints(dataframe = output, dimensions = dimensions, mode = "all")
-                                        Sys.sleep(15)
-                                }
+                             
                         }
                 }
                 
@@ -61,15 +65,15 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
                         output = cbind(input,
                                        func1 = apirequest(input = input[,1:2], func = 1, endpoint = endpoint, base = base, token = token),
                                        func2 = apirequest(input = input[,1:2], func = 2, endpoint = endpoint, base = base, token = token))
+                        print("random initial sample looks like this:")
+                        visualiseDatapoints(dataframe = output, dimensions = dimensions, mode = "all")
+                        
+                        print("proceeding with adaptive sampling")
                         
                         for(i in 1:loops){
                                 iteration = intelligentSample(output = output, endpoint = endpoint, token = token, base = base, dimensions = dimensions)
                                 output = rbind(output, iteration)
-                                #vis
-                                if(i %in% seq(1, 1000, by = 10)) {
-                                        visualiseDatapoints(dataframe = output, dimensions = dimensions, mode = "all")
-                                        Sys.sleep(15)
-                                }
+
                         }
                 }
                 return(output)
@@ -85,6 +89,7 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
 #' @author: Felix
 #' @param batchSize: Size of df to be generated
 #' @param mode: how do are these samples generated
+#' @param seed: random seed. Just needed for reproducibility
 generateInput = function(batchSize = 50, seed, dimensions) {
         print(paste("generating random sample with seed" , seed))
         seed = seed
@@ -164,6 +169,10 @@ generateInputGrid = function(endpoint, base, token, dimensions){
 }
 
 
+#' @description takes output from an initial random sample and applies adaptive sampling 
+#' @author: Felix
+#' @param output: initial random sample to test on
+#' rest is taken from higher level function
 intelligentSample = function(output, endpoint, base, token, dimensions){
         
         if(dimensions == 3) {
@@ -171,16 +180,18 @@ intelligentSample = function(output, endpoint, base, token, dimensions){
                 f1 = lm(func1 ~ x1 + x2 + x3, data = output)
                 #calculate confidence intervals
                 conf = as.data.frame(predict(f1, newdata = output[,1:3], interval = "confidence"))
-                #select highest intervals, select input points
+                #select highest intervals, select random input points from the highest 20
                 output$high = abs(conf$lwr - conf$upr)
-                sel1 = dplyr::arrange(output, desc(high))[1:10,]
+                sel1 = dplyr::arrange(output, desc(high))[1:20,]
+                sel1 = sel1[sample(1:nrow(sel1), 10),]
                 #fit function to dataframe for function 2
                 f2 = lm(func2 ~ x1 + x2 + x3, data = output)
                 #calculate confidence intervals
                 conf = as.data.frame(predict(f2, newdata = output[,1:3], interval = "confidence"))
-                #select highest intervals, select input points
+                #select highest intervals, select random input points from the highest 20 
                 output$high = abs(conf$lwr - conf$upr)
-                sel2 = dplyr::arrange(output, desc(high))[1:10,]
+                sel2 = dplyr::arrange(output, desc(high))[1:20,]
+                sel2 = sel2[sample(1:nrow(sel2), 10),]
                 input = as.data.frame(sapply(rbind(sel1[,1:3],sel2[,1:3]), jitter))   
                 #check for values out of bounds (-5,5) - even though Api allows for requests out of bounds?
                 input = input[input$x1 <= 5 & input$x1 >= -5 & input$x2 <= 5 & input$x2 >= -5 & input$x3 <= 5 & input$x3 >= -5, ]
@@ -197,14 +208,14 @@ intelligentSample = function(output, endpoint, base, token, dimensions){
                 conf = as.data.frame(predict(f1, newdata = output[,1:2], interval = "confidence"))
                 #select highest intervals, select input points
                 output$high = abs(conf$lwr - conf$upr)
-                sel1 = dplyr::arrange(output, desc(high))[1:10,]
+                sel1 = dplyr::arrange(output, desc(high))[1:6,]
                 #fit function to dataframe for function 2
                 f2 = lm(func2 ~ x1 + x2, data = output)
                 #calculate confidence intervals
                 conf = as.data.frame(predict(f2, newdata = output[,1:2], interval = "confidence"))
                 #select highest intervals, select input points
                 output$high = abs(conf$lwr - conf$upr)
-                sel2 = dplyr::arrange(output, desc(high))[1:10,]
+                sel2 = dplyr::arrange(output, desc(high))[1:6,]
                 input = as.data.frame(sapply(rbind(sel1[,1:2],sel2[,1:2]), jitter))   
                 #check for values out of bounds (-5,5) - even though Api allows for requests out of bounds?
                 input = input[input$x1 <= 5 & input$x1 >= -5 & input$x2 <= 5 & input$x2 >= -5, ]
