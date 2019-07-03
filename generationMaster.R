@@ -79,7 +79,12 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
 
 }
 
+<<<<<<< HEAD
+
+####only for use with adaptive sampling does not work####
+=======
 ####only for use if adaptive sampling does not work####
+>>>>>>> c20e8c5c7783db92ea3f676a2412382d92d2fcb4
 #' @description generate hypercube input variables for api requests [-5:5]
 #' @author: Felix
 #' @param batchSize: Size of df to be generated
@@ -106,6 +111,67 @@ generateInput = function(batchSize = 50, seed, dimensions) {
         return(input)
 }
 
+<<<<<<< HEAD
+  return(input)
+}
+
+
+#' @description generate hypercube grid as basis for adaptive sampling  [-5:5]
+#' @author: Niclas
+#' @param stepSize: Size of the steps for the initial grid df to be generated
+generateGrid = function(lowerBound = -5, upperBound = 5, stepSize = 0.1, dimensions) {
+  
+  if(dimensions == 3){
+    x1 = seq(lowerBound, upperBound, by = stepSize)
+    x2 = seq(lowerBound, upperBound, by = stepSize)
+    x3 = seq(lowerBound, upperBound, by = stepSize)
+    input = expand.grid(x1,x2,x3)
+    colnames(input) <- c("x1","x2","x3")
+    
+    print(paste("generating initial grid of length" , nrow(input)))
+    
+  }
+  else{
+    x1 = seq(lowerBound, upperBound, by = stepSize)
+    x2 = seq(lowerBound, upperBound, by = stepSize)
+    input = expand.grid(x1,x2)
+    colnames(input) <- c("x1","x2")
+    
+    print(paste("generating initial grid of length" , nrow(input)))
+    
+  }
+  
+  return(input)
+}
+
+
+#'@description generate initial grid with responses from api to enable efficient sampling
+#'@author: Niclas
+#'@param fun: function that needs to be approximated
+#'@param endpoint: endpoint that will be used
+#'@param batchSize: batchSize of observations to be requested from the API; default = 50
+generateInputGrid = function(endpoint, base, token, dimensions){
+  outDf = data.frame()
+  
+  #fill dataframe with request and reponse data
+  input = generateGrid(lowerBound = -5, upperBound = 5, stepSize = 2, dimensions)
+  
+  if(dimensions == 3){
+    output = cbind(input,
+                   func1 = apirequest(input = input[,1:3], func = 1, endpoint = endpoint, base = base, token = token),
+                   func2 = apirequest(input = input[,1:3], func = 2, endpoint = endpoint, base = base, token = token))
+  }
+  
+  else{
+    output = cbind(input,
+                   func1 = apirequest(input = input[,1:2], func = 1, endpoint = endpoint, base = base, token = token),
+                   func2 = apirequest(input = input[,1:2], func = 2, endpoint = endpoint, base = base, token = token))
+  }
+  outDf = rbind(outDf, output)
+  return(outDf)
+}
+<<<<<<< HEAD
+=======
 intelligentSample = function(output, endpoint, base, token, dimensions){
         
         if(dimensions == 3) {
@@ -158,3 +224,41 @@ intelligentSample = function(output, endpoint, base, token, dimensions){
         
         return(iteration)
 }
+>>>>>>> c20e8c5c7783db92ea3f676a2412382d92d2fcb4
+=======
+
+#'@description Generate train and test split on the basis of sampled dataframe
+#'@author: Niclas
+split = function(df){
+  
+  set.seed(1234)
+  
+  #Access and standardize data
+  if(ncol(df) == 5){
+    input1 = df[c("x1","x2","func1")]
+    #input1 = data.frame(scale(input1)) # Standardizing the data
+    
+    input2 = df[c("x1","x2","func2")]
+    #input2 = data.frame(scale(input2)) # Standardizing the data
+  }
+  
+  if(ncol(df) == 6){
+    input1 = df[c("x1","x2","x3","func1")]
+    #input1 = data.frame(scale(input1)) # Standardizing the data
+    
+    input2 = df[c("x1","x2","x3","func2")]
+    #input2 = data.frame(scale(input2)) # Standardizing the data
+  }
+  
+  #Create train/test split for training algorithms
+  ids1 = sample(1:nrow(input1), size=nrow(input1)*0.75, replace = FALSE)
+  train1 = input1[ids1,]
+  test1 = input1[-ids1,]
+  
+  ids2 = sample(1:nrow(input2), size=nrow(input2)*0.75, replace = FALSE)
+  train2 = input2[ids2,]
+  test2 = input2[-ids2,]
+  
+  return(list(train1,test1,train2,test2))
+}
+>>>>>>> niclas_surrogates
