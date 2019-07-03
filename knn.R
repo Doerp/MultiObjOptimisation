@@ -16,8 +16,8 @@ knnModel = function(train1, train2, test1, test2){
         )
         
         #Define how to search through the parameter set
-        ctrl = makeTuneControlRandom(maxit=5)
-        #ctrl = makeTuneControlGrid()
+        #ctrl = makeTuneControlRandom(maxit=5)
+        ctrl = makeTuneControlGrid()
         
         #Fine Tuning the Models for both functions based on param set
         res1 = tuneParams("regr.kknn", task = train_task1, resampling = rdesc,

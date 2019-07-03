@@ -5,12 +5,12 @@ base="optim.uni-muenster.de:5000/"
 token="866de98d0d47426e92cc0e3394df5f07"
 batchSize=50
 
-endpoint = "api-test3D"
-if(endpoint == "api-test3D"){
-        dimensions = 3
+dimensions = 3
+if(dimensions == 3){
+        endpoint = "api-test3D"
 }
-if(endpoint == "api-test2D") {
-        dimensions = 2
+if(dimensions == 2) {
+        endpoint = "api-test2D"
 }
 
 #all operations of the data take place here
@@ -24,7 +24,7 @@ dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops
 visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "all")
 
 #Generate train-test split for model training and tuning
-split = split(dataframe)
+split = split(df = dataframe, dimensions = dimensions)
 train1 = as.data.frame(split[1])
 test1 = as.data.frame(split[2])
 train2 = as.data.frame(split[3])
@@ -32,19 +32,43 @@ test2 = as.data.frame(split[4])
 
 #Train surrogate models for both functions including hyperparameter tuning and receive predictions on the test set
 #install_tensorflow(version = "1.12")
-ann = kerasModel(train1, train2, test1, test2)
+ann = kerasModel(train1, train2, test1, test2, dimensions = dimensions)
 xgboost = XGBoostModel(train1, train2, test1, test2)
 rf = rfModel(train1, train2, test1, test2)
 svm = svmModel(train1, train2, test1, test2)
 knn = knnModel(train1, train2, test1, test2)
 
 #Create data frame for comparing the different models
-performance = data.frame(
-        "Algorithm" = c("ANN", "XGBoost", "Random Forest", "Support Vector Machine", "k-Nearest Neighbors"),
-        "MSE Function 1" = c(ann[[3]],xgboost[[3]],rf[[3]],svm[[3]],knn[[3]]), 
-        "MSE Function 2" = c(ann[[4]],xgboost[[4]],rf[[4]],svm[[4]],knn[[4]])
-        )
+performance = data.frame("Algorithm" = c("ANN", "XGBoost", "Random Forest", "Support Vector Machine", "k-Nearest Neighbors"))
+
+performance$MSE_func1 <- c(ann[[3]],xgboost[[3]],rf[[3]],svm[[3]],knn[[3]])
+performance$Rank_func1 <- NA
+performance$Rank_func1 <- rank(performance$MSE_func1)
+
+performance$MSE_func2 <- c(ann[[4]],xgboost[[4]],rf[[4]],svm[[4]],knn[[4]])
+performance$Rank_func2 <- NA
+performance$Rank_func2 <- rank(performance$MSE_func2)
+
 print(performance)
+
+#Use best-performing surrogate models to predict the whole hypercube
+if(dimensions == 3){
+        grid = generateGrid(stepSize = 0.5, dimensions = dimensions)
+}
+if(dimensions == 2) {
+        grid = generateGrid(stepSize = 0.1, dimensions = dimensions)
+}
+
+#Needs automation, algorithms are choosen manually and hardcoded!
+surrogate1 = predict(rf[[1]], newdata = grid)
+surrogate2 = predict(xgboost[[2]], newdata = grid)
+
+grid$func1 <- surrogate1$data$response
+grid$func2 <- surrogate2$data$response
+
+#Visualize both surrogate models
+visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func1")
+visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func2")
 
 
 # #Define Resampling strategy (default)
