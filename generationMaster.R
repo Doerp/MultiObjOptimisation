@@ -262,3 +262,54 @@ split = function(df, dimensions){
   
   return(list(train1,test1,train2,test2))
 }
+
+assessPerformance = function(ann, knn, svm, xgboost, rf, surrogate){
+       
+        performance = data.frame("Algorithms" = c("ANN", "XGBoost", "Random Forest", "Support Vector Machine", "k-Nearest Neighbors"),
+                                 "MSE_func1" = c(ann[[3]],xgboost[[3]],rf[[3]],svm[[3]],knn[[3]]),
+                                 "MSE_func2" = c(ann[[4]],xgboost[[4]],rf[[4]],svm[[4]],knn[[4]]))
+        performance$Algorithms = as.character(performance$Algorithms)
+        
+        print(performance)
+        
+        if(surrogate == 1) {
+                surrogate1 = performance[performance$MSE_func1 == min(performance$MSE_func1),1]
+                if(surrogate1 == "XGBoost") {
+                        return(xgboost)
+                }       
+                if(surrogate1 == "ANN") {
+                        return(ann)
+                }
+                if(surrogate1 == "Random Forest") {
+                        return(rf)
+                }
+                if(surrogate1 == "Support Vector Machine") {
+                        return(svm)
+                }
+                if(surrogate1 == "k-Nearest Neighbors") {
+                        return(knn)
+                }   
+        }
+        if(surrogate == 2){
+                surrogate2 = performance[performance$MSE_func2 == min(performance$MSE_func2),1]
+                if(surrogate2 == "XGBoost") {
+                        return(xgboost)
+                }
+                if(surrogate2 == "ANN") {
+                        return(ann)
+                }
+                if(surrogate2 == "Random Forest") {
+                        return(rf)
+                }
+                if(surrogate2 == "Support Vector Machine") {
+                        return(svm)
+                }
+                if(surrogate2 == "k-Nearest Neighbors") {
+                        return(knn)
+                }    
+        }
+
+}
+        
+       
+

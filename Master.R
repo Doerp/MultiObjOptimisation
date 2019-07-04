@@ -1,20 +1,17 @@
 ###Master###
-#setwd("C:/Users/felix/Google Drive/Master/WWU/Data Analytics 2/MultObjOptimisation")
+setwd("C:/Users/felix/Google Drive/Master/WWU/Data Analytics 2/MultObjOptimisation")
 source("sourcer.R")
 base="optim.uni-muenster.de:5000/"
 token="866de98d0d47426e92cc0e3394df5f07"
 batchSize=50
 
-dimensions = 3
+dimensions = 2
 if(dimensions == 3){
         endpoint = "api-test3D"
 }
 if(dimensions == 2) {
         endpoint = "api-test2D"
 }
-
-#all operations of the data take place here
-#no external data may be generated - functional proramming; all data need to be returned to the master layer
 
 #import data and build dataframe for observations and the two target variables. 
 dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 20, base = base, 
@@ -39,17 +36,8 @@ svm = svmModel(train1, train2, test1, test2)
 knn = knnModel(train1, train2, test1, test2)
 
 #Create data frame for comparing the different models
-performance = data.frame("Algorithm" = c("ANN", "XGBoost", "Random Forest", "Support Vector Machine", "k-Nearest Neighbors"))
-
-performance$MSE_func1 <- c(ann[[3]],xgboost[[3]],rf[[3]],svm[[3]],knn[[3]])
-performance$Rank_func1 <- NA
-performance$Rank_func1 <- rank(performance$MSE_func1)
-
-performance$MSE_func2 <- c(ann[[4]],xgboost[[4]],rf[[4]],svm[[4]],knn[[4]])
-performance$Rank_func2 <- NA
-performance$Rank_func2 <- rank(performance$MSE_func2)
-
-print(performance)
+surrogate1 = assessPerformance(ann, knn, svm, xgboost, rf, surrogate = 1)
+surrogate2 = assessPerformance(ann, knn, svm, xgboost, rf, surrogate = 2)
 
 #Use best-performing surrogate models to predict the whole hypercube
 if(dimensions == 3){
@@ -60,11 +48,11 @@ if(dimensions == 2) {
 }
 
 #Needs automation, algorithms are choosen manually and hardcoded!
-surrogate1 = predict(rf[[1]], newdata = grid)
-surrogate2 = predict(xgboost[[2]], newdata = grid)
+surrogate1Pred = predict(surrogate1, newdata = grid)
+surrogate2Pred = predict(surrogate2, newdata = grid)
 
-grid$func1 <- surrogate1$data$response
-grid$func2 <- surrogate2$data$response
+grid$func1 <- surrogate1Pred$data$response
+grid$func2 <- surrogate2Pred$data$response
 
 #Visualize both surrogate models
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func1")
