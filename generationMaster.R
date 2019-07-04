@@ -180,21 +180,23 @@ intelligentSample = function(output, endpoint, base, token, dimensions){
                 f1 = lm(func1 ~ x1 + x2 + x3, data = output)
                 #calculate confidence intervals
                 conf = as.data.frame(predict(f1, newdata = output[,1:3], interval = "confidence"))
-                #select highest intervals, select random input points from the highest 20
+                #select highest intervals, select random input points from the highest 25
                 output$high = abs(conf$lwr - conf$upr)
-                sel1 = dplyr::arrange(output, desc(high))[1:20,]
+                sel1 = dplyr::arrange(output, desc(high))[1:25,]
                 sel1 = sel1[sample(1:nrow(sel1), 10),]
                 #fit function to dataframe for function 2
                 f2 = lm(func2 ~ x1 + x2 + x3, data = output)
                 #calculate confidence intervals
                 conf = as.data.frame(predict(f2, newdata = output[,1:3], interval = "confidence"))
-                #select highest intervals, select random input points from the highest 20 
+                #select highest intervals, select random input points from the highest 25 
                 output$high = abs(conf$lwr - conf$upr)
-                sel2 = dplyr::arrange(output, desc(high))[1:20,]
+                sel2 = dplyr::arrange(output, desc(high))[1:25,]
                 sel2 = sel2[sample(1:nrow(sel2), 10),]
                 input = as.data.frame(sapply(rbind(sel1[,1:3],sel2[,1:3]), jitter))   
-                #check for values out of bounds (-5,5) - even though Api allows for requests out of bounds?
+                #check for values out of bounds (-5,5) - even though Api allows for requests out of bounds? 
+                #check for duplicates
                 input = input[input$x1 <= 5 & input$x1 >= -5 & input$x2 <= 5 & input$x2 >= -5 & input$x3 <= 5 & input$x3 >= -5, ]
+                input[!input$x1 %in% output$x1 & !input$x2 %in% output$x2, ]
                 #request top 20 most varied predictions of both functions
                 iteration = cbind(input,
                                   func1 = apirequest(input = input[,1:3], func = 1, endpoint = endpoint, base = base, token = token),
@@ -263,6 +265,9 @@ split = function(df, dimensions){
   return(list(train1,test1,train2,test2))
 }
 
+#' @description takes all models and evaluates them with respect to performance on the function 1 and 2
+#' @author Felix/ Niclas
+#' params: give models and which surrogate you want to evaluate
 assessPerformance = function(ann, knn, svm, xgboost, rf, surrogate){
        
         performance = data.frame("Algorithms" = c("ANN", "XGBoost", "Random Forest", "Support Vector Machine", "k-Nearest Neighbors"),
@@ -275,37 +280,37 @@ assessPerformance = function(ann, knn, svm, xgboost, rf, surrogate){
         if(surrogate == 1) {
                 surrogate1 = performance[performance$MSE_func1 == min(performance$MSE_func1),1]
                 if(surrogate1 == "XGBoost") {
-                        return(xgboost)
+                        return(xgboost[[1]])
                 }       
                 if(surrogate1 == "ANN") {
-                        return(ann)
+                        return(ann[[1]])
                 }
                 if(surrogate1 == "Random Forest") {
-                        return(rf)
+                        return(rf[[1]])
                 }
                 if(surrogate1 == "Support Vector Machine") {
-                        return(svm)
+                        return(svm[[1]])
                 }
                 if(surrogate1 == "k-Nearest Neighbors") {
-                        return(knn)
+                        return(knn[[1]])
                 }   
         }
         if(surrogate == 2){
                 surrogate2 = performance[performance$MSE_func2 == min(performance$MSE_func2),1]
                 if(surrogate2 == "XGBoost") {
-                        return(xgboost)
+                        return(xgboost[[1]])
                 }
                 if(surrogate2 == "ANN") {
-                        return(ann)
+                        return(ann[[1]])
                 }
                 if(surrogate2 == "Random Forest") {
-                        return(rf)
+                        return(rf[[1]])
                 }
                 if(surrogate2 == "Support Vector Machine") {
-                        return(svm)
+                        return(svm[[1]])
                 }
                 if(surrogate2 == "k-Nearest Neighbors") {
-                        return(knn)
+                        return(knn[[1]])
                 }    
         }
 
