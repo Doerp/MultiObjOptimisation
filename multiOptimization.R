@@ -16,7 +16,6 @@ mutation = function(output){
                                }
                        
                        }      
-                       }
                         
                 }else if (r[i] < -0.4){
                         
@@ -49,11 +48,6 @@ mutation = function(output){
                         output[i,c('x1')]  = output[i,c('x1')] + r[i]
                 }
         }
-        
-        
-        
-        #df[,c("x1","x2")] + rnorm(n = dim(df[,c("x1","x2")])[1],mean = 0,sd = 1)
-        
         
         return(output)
 }
