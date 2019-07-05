@@ -8,7 +8,7 @@ maxCrowdingDistance = function(dataframe, dimensions){
         indices = exec(dataframe$func1[1:1000], dataframe$func2[1:1000])
         indices = c(unlist(indices))
         
-        #Apply 1 to every index - WHY?
+        #Apply 1 to every index - In Python indexing starts from 0 but in R it starts from 1
         indices = sapply(indices , function(x){
                 x = x+1
         })
@@ -31,11 +31,13 @@ mutation = function(output){
         
         for (i in 1:length(r)) {
                 if(r[i] > 0.6 ){
-                        print(i)
                         while(1){
                                 new  = output[i,c('x1')] + rnorm(n = 1,mean = 0,sd = 1)
                                 if(new <=5 & new >=-5){
                                         output[i,c('x1')] = new
+                                        if(dim(output)[2] == 3){
+                                        output[i,c('x3')] = new   
+                                        }
                                         break;
                                 }
                                 
@@ -58,6 +60,11 @@ mutation = function(output){
                         while(1){
                                 new1  = output[i,c('x1')] + rnorm(n = 1,mean = 0,sd = 1)
                                 new2  = output[i,c('x2')] + rnorm(n = 1,mean = 0,sd = 1)
+                                if(dim(output)[2]==3){
+                                        new3  = output[i,c('x3')] + rnorm(n = 1,mean = 0,sd = 1)
+                                        
+                                }
+                                
                                 if(new1 <=5 & new1 >=-5){
                                         output[i,c('x1')] = new1
                                         break;
@@ -66,12 +73,29 @@ mutation = function(output){
                                         output[i,c('x2')] = new2
                                         break;
                                 }
+                                if(dim(output)[2]==3){
+                                        if(new3 <=5 & new3 >=-5){
+                                        output[i,c('x2')] = new2
+                                        break;
+                                        }
+                                }
                                 
                         }
-                        output[i,c('x2')]  = output[i,c('x2')] + r[i]
-                        output[i,c('x1')]  = output[i,c('x1')] + r[i]
+
+                        
                 }
         }
         
         return(output)
 }
+
+
+
+
+op = dataframe[indices,c("x1","x2")]
+
+
+
+ggplot(data = op , mapping = aes(x = x1 , y = x2)) + geom_point()
+ggplot(data = op1 , mapping = aes(x = x1 , y = x2)) + geom_point()
+
