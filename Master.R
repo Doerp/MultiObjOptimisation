@@ -58,7 +58,7 @@ visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func1")
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func2")
 
 #Perform multi-object Optimization to receive points to maximize the crowding distance in the grid
-output = maxCrowdingDistance(grid)
+output = maxCrowdingDistance(dataframe = grid, dimensions = dimensions)
 df = mutation(output = output)
 
 #Get the pareto front as predicted by our models

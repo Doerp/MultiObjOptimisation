@@ -1,4 +1,4 @@
-maxCrowdingDistance = function(dataframe){
+maxCrowdingDistance = function(dataframe, dimensions){
         
         #Source python script for optimization
         use_python("/usr/local/bin/python")
@@ -13,7 +13,13 @@ maxCrowdingDistance = function(dataframe){
                 x = x+1
         })
         
-        output = dataframe[indices,c("x1","x2")]
+        if(dimensions == 2){
+                output = dataframe[indices,c("x1","x2")]
+        }
+        
+        if(dimensions == 3){
+                output = dataframe[indices,c("x1","x2","x3")]
+        }
         
         return(output)
 }
