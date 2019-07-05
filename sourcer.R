@@ -26,4 +26,9 @@ source("keras.R")
 source("xgboost.R")
 source("rf.R")
 source("knn.R")
+source("multiOptimization.R")
 #source("evolutionMaster.R") deprecated: is not needed. Misunderstanding of the task
+
+#Source python for optimization purposes
+use_python("/usr/local/bin/python")
+source_python('nsga.py')

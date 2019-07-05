@@ -47,7 +47,6 @@ if(dimensions == 2) {
         grid = generateGrid(stepSize = 0.1, dimensions = dimensions)
 }
 
-#Needs automation, algorithms are choosen manually and hardcoded!
 surrogate1Pred = predict(surrogate1, newdata = grid)
 surrogate2Pred = predict(surrogate2, newdata = grid)
 
@@ -58,25 +57,17 @@ grid$func2 <- surrogate2Pred$data$response
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func1")
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func2")
 
+#Perform multi-object Optimization to receive points to maximize the crowding distance in the grid
+output = maxCrowdingDistance(grid)
+df = mutation(output = output)
 
-# #Define Resampling strategy (default)
-# rdesc = makeResampleDesc("CV", iters = 10)
-# 
-# #Benchmark mlr models on both surrogate models
-# lrns1 = list(xgboost[[3]], rf[[3]], svm[[3]], knn[[3]])
-# task1 = makeRegrTask(data=test1, target="func1")
-# bmr1 = benchmark(lrns1, task1, rdesc, measures = list(mse, rsq))
-# print(bmr1)
-# #plotBMRBoxplots(bmr1)
-# 
-# lrns2 = list(xgboost[[4]], rf[[4]], svm[[4]], knn[[4]])
-# task2 = makeRegrTask(data=test2, target="func2")
-# bmr2 = benchmark(lrns2, task2, rdesc, measures = list(mse, rsq))
-# print(bmr2)
-# #plotBMRBoxplots(bmr2)
-# 
-# #Compare the benchmark results
-# rmat1 = convertBMRToRankMatrix(bmr1)
-# print(rmat1)
-# rmat2 = convertBMRToRankMatrix(bmr2)
-# print(rmat2)
+#Get the pareto front as predicted by our models
+pred_func1 = predict(surrogate1, newdata = df)
+pred_func2 = predict(surrogate2, newdata = df)
+
+df$func1 <- pred_func1$data$response
+df$func2 <- pred_func2$data$response
+
+paretoFront <- head(df,20)
+plot(x = paretoFront$func1, y = paretoFront$func2)
+

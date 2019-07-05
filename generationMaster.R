@@ -298,23 +298,20 @@ assessPerformance = function(ann, knn, svm, xgboost, rf, surrogate){
         if(surrogate == 2){
                 surrogate2 = performance[performance$MSE_func2 == min(performance$MSE_func2),1]
                 if(surrogate2 == "XGBoost") {
-                        return(xgboost[[1]])
+                        return(xgboost[[2]])
                 }
                 if(surrogate2 == "ANN") {
-                        return(ann[[1]])
+                        return(ann[[2]])
                 }
                 if(surrogate2 == "Random Forest") {
-                        return(rf[[1]])
+                        return(rf[[2]])
                 }
                 if(surrogate2 == "Support Vector Machine") {
-                        return(svm[[1]])
+                        return(svm[[2]])
                 }
                 if(surrogate2 == "k-Nearest Neighbors") {
-                        return(knn[[1]])
+                        return(knn[[2]])
                 }    
         }
 
 }
-        
-       
-
