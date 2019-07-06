@@ -14,8 +14,9 @@ svmModel = function(train1, train2, test1, test2){
         
         # Creating a Discrete Parameter set to 'c' and 'sigma' values
         discrete_ps = makeParamSet(
-                makeDiscreteParam("C", values = c(1.5, 2.0,2.5,3.0,3.5,4.0)),
-                makeDiscreteParam("sigma", values = c(0.5, 1.0, 1.5, 2.0))
+                makeNumericParam("C", lower = 0.01, upper = 1),
+                makeNumericParam("sigma", lower = 0.01, upper = 10),
+                makeDiscreteParam("kernel", values = c("polydot", "rbfdot", "tanhdot"))
         )
         
         #Fine Tuning the Model based on 'c' and 'sigma' values

@@ -90,12 +90,25 @@ mutation = function(output){
 }
 
 
+performEvolution = function(generations, dimensions, dataframe, surrogate1, surrogate2) {
+        
+        for(gen in 1:generations){
+                
+                selection = maxCrowdingDistance(dataframe = dataframe, dimensions = dimensions)
+                print(paste0("generating generation ", gen))
+                nextGen = mutation(selection)
+                nextGet$y1 = predict(surrogate1, newdata = nextGen)
+                nextGet$y2 = predict(surrogate2, newdata = nextGen)
+                ggplot(data = nextGen , mapping = aes(x = y1 , y = y2)) + geom_point()
+                #print best selection?
+        }
+        
+}
+
+#op = dataframe[indices,c("x1","x2")]
 
 
-op = dataframe[indices,c("x1","x2")]
 
-
-
-ggplot(data = op , mapping = aes(x = x1 , y = x2)) + geom_point()
-ggplot(data = op1 , mapping = aes(x = x1 , y = x2)) + geom_point()
+#ggplot(data = op , mapping = aes(x = x1 , y = x2)) + geom_point()
+#ggplot(data = op1 , mapping = aes(x = x1 , y = x2)) + geom_point()
 

@@ -57,17 +57,28 @@ grid$func2 <- surrogate2Pred$data$response
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func1")
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func2")
 
-#Perform multi-object Optimization to receive points to maximize the crowding distance in the grid
-output = maxCrowdingDistance(dataframe = grid, dimensions = dimensions)
-df = mutation(output = output)
+for(gen in 1:50){
+        
+        #Perform multi-object Optimization to receive points to maximize the crowding distance in the grid
+        output = maxCrowdingDistance(dataframe = grid, dimensions = dimensions)
+        df = mutation(output = output)
+        
+        #Get the pareto front as predicted by our models
+        pred_func1 = predict(surrogate1, newdata = df)
+        pred_func2 = predict(surrogate2, newdata = df)
+        
+        df$func1 <- pred_func1$data$response
+        df$func2 <- pred_func2$data$response
+        
+        paretoFront <- head(df,20)
+        plot(x = paretoFront$func1, y = paretoFront$func2)
+        if(dimensions == 3){
+                grid = df[,1:3]
+        }
+        else{
+                grid = df[,1:2]
+        }
+        
+}
 
-#Get the pareto front as predicted by our models
-pred_func1 = predict(surrogate1, newdata = df)
-pred_func2 = predict(surrogate2, newdata = df)
-
-df$func1 <- pred_func1$data$response
-df$func2 <- pred_func2$data$response
-
-paretoFront <- head(df,20)
-plot(x = paretoFront$func1, y = paretoFront$func2)
 
