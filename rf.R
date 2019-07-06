@@ -10,7 +10,7 @@ rfModel = function(train1, train2, test1, test2){
         #Creating a parameter set for the learner
         rf_params <- makeParamSet(
                 # The number of trees in the model (each one built sequentially)
-                makeIntegerParam("ntree", lower = 300, upper = 700),
+                makeIntegerParam("ntree", lower = 200, upper = 700),
                 # Number of observations in the terminal nodes
                 makeIntegerParam("nodesize", lower = 1, upper = 10),
                 # Number of variables to be selected at a node split

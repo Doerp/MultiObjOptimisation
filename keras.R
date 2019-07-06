@@ -57,8 +57,8 @@ kerasModel = function(train1, train2, test1, test2, dimensions){
         mod1 %>% fit(
                 x = X_1,
                 y = y_1,
-                validation_split = 0.2, 
-                epochs = 50, # Number of epochs. Can be changed
+                validation_data = list(as.matrix(test1[ , 1:3]), test1$func1),
+                epochs = 1000, # Number of epochs. Can be changed
                 batch_size = 128,
                 shuffle=T,
                 verbose=2
@@ -67,12 +67,19 @@ kerasModel = function(train1, train2, test1, test2, dimensions){
         mod2 %>% fit(
                 x = X_2,
                 y = y_2,
-                validation_split = 0.2,
-                epochs = 50, # Number of epochs. Can be changed
+                validation_data = list(as.matrix(test2[ , 1:3]), test2$func2),
+                epochs = 1000, # Number of epochs. Can be changed
                 batch_size = 128,
                 shuffle=T,
                 verbose=2
         )
+        
+        pred1 = predict(mod1, as.matrix(test1[1:3]))
+        pred2 = predict(mod2, as.matrix(test2[1:3]))
+        
+        
+        rsqrt1 = rsq(pred1, test1$func1)
+        rsqrt2 = rsq(pred2, test2$func2)
         
         #Get predictions with fitted models    
         if(dimensions == 2){
@@ -90,5 +97,11 @@ kerasModel = function(train1, train2, test1, test2, dimensions){
         
         #df = data.frame(pred1, pred2)
 
-return(list(mod1, mod2, perf1$mean_squared_error, perf2$mean_squared_error))
+return(list(mod1, mod2, perf1$mean_squared_error, perf2$mean_squared_error, rsqrt1, rsqrt2))
+}
+rsq = function(pred , actual){
+        rss <- sum((pred - actual) ^ 2)  ## residual sum of squares
+        tss <- sum((actual - mean(actual)) ^ 2)  ## total sum of squares
+        rsq <- 1 - rss/tss
+        return(rsq)
 }

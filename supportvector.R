@@ -6,8 +6,8 @@ svmModel = function(train1, train2, test1, test2){
         svm_learner = makeLearner(cl = 'regr.ksvm')
         
         #Define how to search through the parameter set
-        #ctrl = makeTuneControlRandom(maxit=5)
-        ctrl = makeTuneControlGrid()
+        ctrl = makeTuneControlRandom(maxit=100)
+        #ctrl = makeTuneControlGrid()
         
         # Creating 5- fold Cross Validation
         rdesc = makeResampleDesc("CV", iters = 5L)
@@ -15,8 +15,7 @@ svmModel = function(train1, train2, test1, test2){
         # Creating a Discrete Parameter set to 'c' and 'sigma' values
         discrete_ps = makeParamSet(
                 makeNumericParam("C", lower = 0.01, upper = 1),
-                makeNumericParam("sigma", lower = 0.01, upper = 10),
-                makeDiscreteParam("kernel", values = c("polydot", "rbfdot", "tanhdot"))
+                makeNumericParam("sigma", lower = 0.01, upper = 1)
         )
         
         #Fine Tuning the Model based on 'c' and 'sigma' values

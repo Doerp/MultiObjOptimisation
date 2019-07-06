@@ -5,20 +5,20 @@ maxCrowdingDistance = function(dataframe, dimensions){
         source_python('nsga.py')
         
         #Execute python function to identify points that maximize crowding distance
-        indices = exec(dataframe$func1[1:1000], dataframe$func2[1:1000])
+        indices = exec(dataframe$func1, dataframe$func2)
         indices = c(unlist(indices))
-        
+
         #Apply 1 to every index - In Python indexing starts from 0 but in R it starts from 1
         indices = sapply(indices , function(x){
                 x = x+1
         })
         
         if(dimensions == 2){
-                output = dataframe[indices,c("x1","x2")]
+                output = dataframe[indices,]
         }
         
         if(dimensions == 3){
-                output = dataframe[indices,c("x1","x2","x3")]
+                output = dataframe[indices,]
         }
         
         return(output)
@@ -26,13 +26,13 @@ maxCrowdingDistance = function(dataframe, dimensions){
 
 
 mutation = function(output){
-        r = rnorm(n = dim(output)[1],mean = 0,sd = 1)
+        r = rnorm(n = nrow(output),mean = 0,sd = 1)
         
         
         for (i in 1:length(r)) {
                 if(r[i] > 0.6 ){
                         while(1){
-                                new  = output[i,c('x1')] + rnorm(n = 1,mean = 0,sd = 1)
+                                new  = output[i,c('x1')] + rnorm(n = 1,mean = 0,sd = 0.5)
                                 if(new <=5 & new >=-5){
                                         output[i,c('x1')] = new
                                         if(dim(output)[2] == 3){
@@ -46,7 +46,7 @@ mutation = function(output){
                 }else if (r[i] < -0.4){
                         
                         while(1){
-                                new  = output[i,c('x2')] + rnorm(n = 1,mean = 0,sd = 1)
+                                new  = output[i,c('x2')] + rnorm(n = 1,mean = 0,sd = 0.5)
                                 if(new <=5 & new >=-5){
                                         output[i,c('x2')] = new
                                         break;
@@ -58,10 +58,10 @@ mutation = function(output){
                         
                         
                         while(1){
-                                new1  = output[i,c('x1')] + rnorm(n = 1,mean = 0,sd = 1)
-                                new2  = output[i,c('x2')] + rnorm(n = 1,mean = 0,sd = 1)
+                                new1  = output[i,c('x1')] + rnorm(n = 1,mean = 0,sd = 0.5)
+                                new2  = output[i,c('x2')] + rnorm(n = 1,mean = 0,sd = 0.5)
                                 if(dim(output)[2]==3){
-                                        new3  = output[i,c('x3')] + rnorm(n = 1,mean = 0,sd = 1)
+                                        new3  = output[i,c('x3')] + rnorm(n = 1,mean = 0,sd = 0.5)
                                         
                                 }
                                 
@@ -90,20 +90,6 @@ mutation = function(output){
 }
 
 
-performEvolution = function(generations, dimensions, dataframe, surrogate1, surrogate2) {
-        
-        for(gen in 1:generations){
-                
-                selection = maxCrowdingDistance(dataframe = dataframe, dimensions = dimensions)
-                print(paste0("generating generation ", gen))
-                nextGen = mutation(selection)
-                nextGet$y1 = predict(surrogate1, newdata = nextGen)
-                nextGet$y2 = predict(surrogate2, newdata = nextGen)
-                ggplot(data = nextGen , mapping = aes(x = y1 , y = y2)) + geom_point()
-                #print best selection?
-        }
-        
-}
 
 #op = dataframe[indices,c("x1","x2")]
 

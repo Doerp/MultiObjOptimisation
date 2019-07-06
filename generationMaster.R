@@ -49,6 +49,7 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
                         output = cbind(input,
                                        func1 = apirequest(input = input[,1:3], func = 1, endpoint = endpoint, base = base, token = token),
                                        func2 = apirequest(input = input[,1:3], func = 2, endpoint = endpoint, base = base, token = token))
+                        write.csv(output, "export.csv", append = T, row.names = F)
                         print("random initial sample looks like this:")
                         visualiseDatapoints(dataframe = output, dimensions = dimensions, mode = "all")
                         
@@ -56,6 +57,7 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
                         for(i in 1:loops){
                                 iteration = intelligentSample(output = output, endpoint = endpoint, token = token, base = base, dimensions = dimensions)
                                 output = rbind(output, iteration)
+                                write.csv(output, "export.csv", append = T, row.names = F)
                              
                         }
                 }
@@ -66,6 +68,7 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
                                        func1 = apirequest(input = input[,1:2], func = 1, endpoint = endpoint, base = base, token = token),
                                        func2 = apirequest(input = input[,1:2], func = 2, endpoint = endpoint, base = base, token = token))
                         print("random initial sample looks like this:")
+                        write.csv(output, "export.csv", append = T, row.names = F)
                         visualiseDatapoints(dataframe = output, dimensions = dimensions, mode = "all")
                         
                         print("proceeding with adaptive sampling")
@@ -73,6 +76,7 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
                         for(i in 1:loops){
                                 iteration = intelligentSample(output = output, endpoint = endpoint, token = token, base = base, dimensions = dimensions)
                                 output = rbind(output, iteration)
+                                write.csv(output, "export.csv", append = T, row.names = F)
 
                         }
                 }
@@ -80,7 +84,17 @@ generateDataFrames = function(endpoint = "api-test2D", batchSize = 50, loops = 1
                 
         }
         
-
+        if(sample == "continue") {
+                
+                output = read.csv("export.csv")
+                
+                for(i in 1:loops){
+                        iteration = intelligentSample(output = output, endpoint = endpoint, token = token, base = base, dimensions = dimensions)
+                        output = rbind(output, iteration)
+                        write.csv(output, "export.csv", append = T, row.names = F)
+                }
+                
+        }
 }
 
 ####only for use with adaptive sampling does not work####
@@ -180,23 +194,26 @@ intelligentSample = function(output, endpoint, base, token, dimensions){
                 f1 = lm(func1 ~ x1 + x2 + x3, data = output)
                 #calculate confidence intervals
                 conf = as.data.frame(predict(f1, newdata = output[,1:3], interval = "confidence"))
-                #select highest intervals, select random input points from the highest 25
+                #select highest intervals, select random input point from the highest 7
                 output$high = abs(conf$lwr - conf$upr)
-                sel1 = dplyr::arrange(output, desc(high))[1:25,]
-                sel1 = sel1[sample(1:nrow(sel1), 10),]
+                sel1 = dplyr::arrange(output, desc(high))[1:7,]
+                sel1 = sel1[sample(1:nrow(sel1), 1),]
                 #fit function to dataframe for function 2
                 f2 = lm(func2 ~ x1 + x2 + x3, data = output)
                 #calculate confidence intervals
                 conf = as.data.frame(predict(f2, newdata = output[,1:3], interval = "confidence"))
-                #select highest intervals, select random input points from the highest 25 
+                #select highest intervals, select random input point from the highest 7
                 output$high = abs(conf$lwr - conf$upr)
-                sel2 = dplyr::arrange(output, desc(high))[1:25,]
-                sel2 = sel2[sample(1:nrow(sel2), 10),]
+                sel2 = dplyr::arrange(output, desc(high))[1:7,]
+                sel2 = sel2[sample(1:nrow(sel2), 1),]
                 input = as.data.frame(sapply(rbind(sel1[,1:3],sel2[,1:3]), jitter))   
                 #check for values out of bounds (-5,5) - even though Api allows for requests out of bounds? 
                 #check for duplicates
                 input = input[input$x1 <= 5 & input$x1 >= -5 & input$x2 <= 5 & input$x2 >= -5 & input$x3 <= 5 & input$x3 >= -5, ]
                 input[!input$x1 %in% output$x1 & !input$x2 %in% output$x2, ]
+                if(nrow(input) == 0){
+                        return()
+                }
                 #request top 20 most varied predictions of both functions
                 iteration = cbind(input,
                                   func1 = apirequest(input = input[,1:3], func = 1, endpoint = endpoint, base = base, token = token),
@@ -210,17 +227,23 @@ intelligentSample = function(output, endpoint, base, token, dimensions){
                 conf = as.data.frame(predict(f1, newdata = output[,1:2], interval = "confidence"))
                 #select highest intervals, select input points
                 output$high = abs(conf$lwr - conf$upr)
-                sel1 = dplyr::arrange(output, desc(high))[1:6,]
+                sel1 = dplyr::arrange(output, desc(high))[1:7,]
+                sel1 = sel1[sample(1:nrow(sel1), 1),]
                 #fit function to dataframe for function 2
                 f2 = lm(func2 ~ x1 + x2, data = output)
                 #calculate confidence intervals
                 conf = as.data.frame(predict(f2, newdata = output[,1:2], interval = "confidence"))
                 #select highest intervals, select input points
                 output$high = abs(conf$lwr - conf$upr)
-                sel2 = dplyr::arrange(output, desc(high))[1:6,]
+                sel2 = dplyr::arrange(output, desc(high))[1:7,]
+                sel2 = sel2[sample(1:nrow(sel2), 1),]
                 input = as.data.frame(sapply(rbind(sel1[,1:2],sel2[,1:2]), jitter))   
                 #check for values out of bounds (-5,5) - even though Api allows for requests out of bounds?
-                input = input[input$x1 <= 5 & input$x1 >= -5 & input$x2 <= 5 & input$x2 >= -5, ]
+                input = input[input$x1 <= 5 & input$x1 >= -5 & input$x2 <= 5 & input$x2 >= -5 & input$x3 <= 5 & input$x3 >= -5, ]
+                input[!input$x1 %in% output$x1 & !input$x2 %in% output$x2, ]
+                if(nrow(input) == 0){
+                        return()
+                }
                 #request top 20 most varied predictions of both functions
                 iteration = cbind(input,
                                   func1 = apirequest(input = input[,1:2], func = 1, endpoint = endpoint, base = base, token = token),

@@ -20,7 +20,7 @@ XGBoostModel = function(train1, train2, test1, test2){
         )
         
         #Define how to search through the parameter set
-        ctrl = makeTuneControlRandom(maxit=5)
+        ctrl = makeTuneControlRandom(maxit=100)
         #ctrl = makeTuneControlGrid()
         
         #Fine Tuning the Models for both functions based on param set

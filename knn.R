@@ -39,11 +39,14 @@ knnModel = function(train1, train2, test1, test2){
         pred2 = predict(mod2, newdata = test2)
         perf2 = performance(pred=pred2, measures=list(mse))
         
+        rsqrt1 = rsq(pred1, test1$func1)
+        rsqrt2 = rsq(pred2, test2$func2)
+        
         #Creating one dataframe with predictions for both functions
         #new_pred1 = pred1$data$response
         #new_pred2 = pred2$data$response
         
         #df = data.frame(new_pred1, new_pred2)
         
-        return(list(mod1, mod2, perf1, perf2))
+        return(list(mod1, mod2, perf1, perf2, rsqrt1, rsqrt2))
 }

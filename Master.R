@@ -5,7 +5,7 @@ base="optim.uni-muenster.de:5000/"
 token="866de98d0d47426e92cc0e3394df5f07"
 batchSize=50
 
-dimensions = 2
+dimensions = 3
 if(dimensions == 3){
         endpoint = "api-test3D"
 }
@@ -14,11 +14,12 @@ if(dimensions == 2) {
 }
 
 #import data and build dataframe for observations and the two target variables. 
-dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 20, base = base, 
+dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 500, base = base, 
                                token = token, dimensions = dimensions, sample = "intelligent")
 
+t = read.csv("export.csv")
 #visualise these datapoints in a 3D explorable space. 
-visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "all")
+visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "func2")
 
 #Generate train-test split for model training and tuning
 split = split(df = dataframe, dimensions = dimensions)
@@ -57,28 +58,31 @@ grid$func2 <- surrogate2Pred$data$response
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func1")
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func2")
 
+output = maxCrowdingDistance(dataframe = dataframe, dimensions = dimensions)
+smallest = data.frame(x1 = c(), x2 = c(), x3 = c(), y1 = c(), y2 = c())
+
+
 for(gen in 1:50){
+       
         
         #Perform multi-object Optimization to receive points to maximize the crowding distance in the grid
-        output = maxCrowdingDistance(dataframe = grid, dimensions = dimensions)
-        df = mutation(output = output)
+        df = mutation(output = output[,1:3])
+        dfNew = df[1:20,]
         
         #Get the pareto front as predicted by our models
-        pred_func1 = predict(surrogate1, newdata = df)
-        pred_func2 = predict(surrogate2, newdata = df)
+        pred_func1 = predict(surrogate1, newdata = dfNew)
+        pred_func2 = predict(surrogate2, newdata = dfNew)
         
-        df$func1 <- pred_func1$data$response
-        df$func2 <- pred_func2$data$response
+        dfNew$func1 <- pred_func1$data$response
+        dfNew$func2 <- pred_func2$data$response
         
-        paretoFront <- head(df,20)
-        plot(x = paretoFront$func1, y = paretoFront$func2)
-        if(dimensions == 3){
-                grid = df[,1:3]
-        }
-        else{
-                grid = df[,1:2]
-        }
+        output = maxCrowdingDistance(dataframe = dfNew, dimensions = dimensions)
+        
+        smallest = rbind(smallest, output[1,] )
+        print(head(output, n = 3))
+
         
 }
 
+plot(x = smallest$func1, y = smallest$func2)
 
