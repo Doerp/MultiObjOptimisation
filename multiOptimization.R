@@ -1,3 +1,7 @@
+#' @description performs non dominated sort and crowding distance to determine best performing pairs
+#' @author Niclas
+#' @param dataframe: containing data to be sorted
+#' @param dimensions: how many dimensions does this have? 
 maxCrowdingDistance = function(dataframe, dimensions){
         
         #Source python script for optimization
@@ -25,6 +29,9 @@ maxCrowdingDistance = function(dataframe, dimensions){
 }
 
 
+#' @description perform mutation on input vectors
+#' @author Raghav
+#' @param output: dataframe that needs to be mutated
 mutation = function(output){
         r = rnorm(n = nrow(output),mean = 0,sd = 1)
         
@@ -90,11 +97,14 @@ mutation = function(output){
 }
 
 
-
-#op = dataframe[indices,c("x1","x2")]
-
-
-
-#ggplot(data = op , mapping = aes(x = x1 , y = x2)) + geom_point()
-#ggplot(data = op1 , mapping = aes(x = x1 , y = x2)) + geom_point()
+#' @description calculate rsquared metric for evaluation
+#' @author Raghav
+#' @param pred: prediction of the model
+#' @param actual: true target of the data
+rsq = function(pred , actual){
+        rss <- sum((pred - actual) ^ 2)  ## residual sum of squares
+        tss <- sum((actual - mean(actual)) ^ 2)  ## total sum of squares
+        rsq <- 1 - rss/tss
+        return(rsq)
+}
 

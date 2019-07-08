@@ -5,9 +5,9 @@
 #'@param endpoint: pass api-test2D, api-test3D for testing purposes. Api only for production environment
 #'@return target variables for given observations 
 apirequest = function(input, func, endpoint, base, token){
-  if(endpoint=="api"){
-    return("Access denied! :)")
-   }
+  #if(endpoint=="api"){
+   # return("Access denied! :)")
+   #}
   input_intermediate = 1:nrow(input)
   for(i in 1:nrow(input)){
     input_intermediate[i]=paste0(input[i,],collapse = ",")

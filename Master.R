@@ -15,12 +15,12 @@ if(dimensions == 2) {
 }
 
 #import data and build dataframe for observations and the two target variables. 
-dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 130, base = base, 
-                               token = token, dimensions = dimensions, sample = "intelligent")
+#dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 8, base = base, 
+ #                              token = token, dimensions = dimensions, sample = "random", functions = "func2")
 
-t = read.csv("export.csv")
+dataframe = read.csv("export.csv")
 #visualise these datapoints in a 3D explorable space. 
-visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "func1")
+visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "func2")
 
 #Generate train-test split for model training and tuning
 split = split(df = dataframe, dimensions = dimensions)
@@ -39,7 +39,6 @@ knn = knnModel(train1, train2, test1, test2)
 
 #Create data frame for comparing the different models
 surrogate1 = assessPerformance(ann, knn, svm, xgboost, rf, surrogate = 1)
-
 surrogate2 = assessPerformance(ann, knn, svm, xgboost, rf, surrogate = 2)
 
 #Use best-performing surrogate models to predict the whole hypercube
@@ -61,10 +60,11 @@ grid$func2 <- surrogate2Pred$data$response
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func1")
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func2")
 
+
 output = maxCrowdingDistance(dataframe = dataframe, dimensions = dimensions)
 smallest = data.frame(x1 = c(), x2 = c(), x3 = c(), y1 = c(), y2 = c())
 
-
+#perform evolution for multi-objective optimisation
 for(gen in 1:400){
        
         
@@ -83,6 +83,7 @@ for(gen in 1:400){
         
         output = maxCrowdingDistance(dataframe = dfNew, dimensions = dimensions)
         
+        #save best individual of each iteration
         smallest = rbind(smallest, output[1,] )
         print(head(output, n = 3))
 
@@ -90,4 +91,6 @@ for(gen in 1:400){
 }
 
 plot(x = smallest$func1, y = smallest$func2)
+maxCrowdingDistance(dataframe = smallest, dimensions = dimensions)
+
 
