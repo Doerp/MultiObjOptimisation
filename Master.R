@@ -4,6 +4,7 @@ source("sourcer.R")
 base="optim.uni-muenster.de:5000/"
 token="866de98d0d47426e92cc0e3394df5f07"
 batchSize=50
+endpoint = "api"
 
 dimensions = 3
 if(dimensions == 3){
@@ -14,12 +15,12 @@ if(dimensions == 2) {
 }
 
 #import data and build dataframe for observations and the two target variables. 
-dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 500, base = base, 
+dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 130, base = base, 
                                token = token, dimensions = dimensions, sample = "intelligent")
 
 t = read.csv("export.csv")
 #visualise these datapoints in a 3D explorable space. 
-visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "func2")
+visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "func1")
 
 #Generate train-test split for model training and tuning
 split = split(df = dataframe, dimensions = dimensions)
@@ -38,6 +39,7 @@ knn = knnModel(train1, train2, test1, test2)
 
 #Create data frame for comparing the different models
 surrogate1 = assessPerformance(ann, knn, svm, xgboost, rf, surrogate = 1)
+
 surrogate2 = assessPerformance(ann, knn, svm, xgboost, rf, surrogate = 2)
 
 #Use best-performing surrogate models to predict the whole hypercube
@@ -48,10 +50,11 @@ if(dimensions == 2) {
         grid = generateGrid(stepSize = 0.1, dimensions = dimensions)
 }
 
-surrogate1Pred = predict(surrogate1, newdata = grid)
+surrogate1Pred = predict(surrogate1, x = as.matrix(grid))
 surrogate2Pred = predict(surrogate2, newdata = grid)
 
 grid$func1 <- surrogate1Pred$data$response
+grid$func1 <- surrogate1Pred
 grid$func2 <- surrogate2Pred$data$response
 
 #Visualize both surrogate models
@@ -62,7 +65,7 @@ output = maxCrowdingDistance(dataframe = dataframe, dimensions = dimensions)
 smallest = data.frame(x1 = c(), x2 = c(), x3 = c(), y1 = c(), y2 = c())
 
 
-for(gen in 1:50){
+for(gen in 1:400){
        
         
         #Perform multi-object Optimization to receive points to maximize the crowding distance in the grid
@@ -70,10 +73,12 @@ for(gen in 1:50){
         dfNew = df[1:20,]
         
         #Get the pareto front as predicted by our models
-        pred_func1 = predict(surrogate1, newdata = dfNew)
+        #pred_func1 = predict(surrogate1, newdata = dfNew)
+        pred_func1 = predict(surrogate1, x = as.matrix(dfNew))
         pred_func2 = predict(surrogate2, newdata = dfNew)
         
-        dfNew$func1 <- pred_func1$data$response
+        #dfNew$func1 <- pred_func1$data$response
+        dfNew$func1 <- c(pred_func1)
         dfNew$func2 <- pred_func2$data$response
         
         output = maxCrowdingDistance(dataframe = dfNew, dimensions = dimensions)

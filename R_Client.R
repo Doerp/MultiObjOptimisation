@@ -6,7 +6,7 @@
 #'@return target variables for given observations 
 apirequest = function(input, func, endpoint, base, token){
   if(endpoint=="api"){
-     return("Access denied! :)")
+    return("Access denied! :)")
    }
   input_intermediate = 1:nrow(input)
   for(i in 1:nrow(input)){
