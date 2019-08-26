@@ -4,8 +4,9 @@ source("sourcer.R")
 base="optim.uni-muenster.de:5000/"
 token="866de98d0d47426e92cc0e3394df5f07"
 batchSize=50
+endpoint = "api"
 
-dimensions = 2
+dimensions = 3
 if(dimensions == 3){
         endpoint = "api-test3D"
 }
@@ -14,11 +15,12 @@ if(dimensions == 2) {
 }
 
 #import data and build dataframe for observations and the two target variables. 
-dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 20, base = base, 
-                               token = token, dimensions = dimensions, sample = "intelligent")
+#dataframe = generateDataFrames(endpoint = endpoint, batchSize = batchSize, loops = 8, base = base, 
+ #                              token = token, dimensions = dimensions, sample = "random", functions = "func2")
 
+dataframe = read.csv("export.csv")
 #visualise these datapoints in a 3D explorable space. 
-visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "all")
+visualiseDatapoints(dataframe = dataframe, dimensions = dimensions, mode = "func2")
 
 #Generate train-test split for model training and tuning
 split = split(df = dataframe, dimensions = dimensions)
@@ -47,11 +49,11 @@ if(dimensions == 2) {
         grid = generateGrid(stepSize = 0.1, dimensions = dimensions)
 }
 
-#Needs automation, algorithms are choosen manually and hardcoded!
-surrogate1Pred = predict(surrogate1, newdata = grid)
+surrogate1Pred = predict(surrogate1, x = as.matrix(grid))
 surrogate2Pred = predict(surrogate2, newdata = grid)
 
 grid$func1 <- surrogate1Pred$data$response
+grid$func1 <- surrogate1Pred
 grid$func2 <- surrogate2Pred$data$response
 
 #Visualize both surrogate models
@@ -59,24 +61,36 @@ visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func1")
 visualiseDatapoints(dataframe = grid, dimensions = dimensions, mode = "func2")
 
 
-# #Define Resampling strategy (default)
-# rdesc = makeResampleDesc("CV", iters = 10)
-# 
-# #Benchmark mlr models on both surrogate models
-# lrns1 = list(xgboost[[3]], rf[[3]], svm[[3]], knn[[3]])
-# task1 = makeRegrTask(data=test1, target="func1")
-# bmr1 = benchmark(lrns1, task1, rdesc, measures = list(mse, rsq))
-# print(bmr1)
-# #plotBMRBoxplots(bmr1)
-# 
-# lrns2 = list(xgboost[[4]], rf[[4]], svm[[4]], knn[[4]])
-# task2 = makeRegrTask(data=test2, target="func2")
-# bmr2 = benchmark(lrns2, task2, rdesc, measures = list(mse, rsq))
-# print(bmr2)
-# #plotBMRBoxplots(bmr2)
-# 
-# #Compare the benchmark results
-# rmat1 = convertBMRToRankMatrix(bmr1)
-# print(rmat1)
-# rmat2 = convertBMRToRankMatrix(bmr2)
-# print(rmat2)
+output = maxCrowdingDistance(dataframe = dataframe, dimensions = dimensions)
+smallest = data.frame(x1 = c(), x2 = c(), x3 = c(), y1 = c(), y2 = c())
+
+#perform evolution for multi-objective optimisation
+for(gen in 1:400){
+       
+        
+        #Perform multi-object Optimization to receive points to maximize the crowding distance in the grid
+        df = mutation(output = output[,1:3])
+        dfNew = df[1:20,]
+        
+        #Get the pareto front as predicted by our models
+        #pred_func1 = predict(surrogate1, newdata = dfNew)
+        pred_func1 = predict(surrogate1, x = as.matrix(dfNew))
+        pred_func2 = predict(surrogate2, newdata = dfNew)
+        
+        #dfNew$func1 <- pred_func1$data$response
+        dfNew$func1 <- c(pred_func1)
+        dfNew$func2 <- pred_func2$data$response
+        
+        output = maxCrowdingDistance(dataframe = dfNew, dimensions = dimensions)
+        
+        #save best individual of each iteration
+        smallest = rbind(smallest, output[1,] )
+        print(head(output, n = 3))
+
+        
+}
+
+plot(x = smallest$func1, y = smallest$func2)
+maxCrowdingDistance(dataframe = smallest, dimensions = dimensions)
+
+

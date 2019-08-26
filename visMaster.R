@@ -25,7 +25,7 @@ visualiseDatapoints = function(dataframe, dimensions, mode = "all"){
     }
     
     if(mode == "func1") {
-      
+                #add colour here to for data ranges
       scatter3D(x = dataframe$x1, y = dataframe$func1, z= dataframe$x2, phi = 0, theta = 100,
                 main = "Datapoints",
                 ylab = "Function 1", xlab = "X1", zlab = "X2")
@@ -61,6 +61,7 @@ visualiseDatapoints = function(dataframe, dimensions, mode = "all"){
     }
     
     if(mode == "func1") {
+            #add colours here for 3D measurements
       
       scatter3D(x = dataframe$x1, y = dataframe$x2, z= dataframe$x3, phi = 0, theta = 100,
                 colvar = dataframe$func1, main = "Datapoints",
